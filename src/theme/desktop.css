@@ -1,0 +1,20 @@
+.layout-desktop {
+  display: grid;
+  grid-template-columns: 260px 1fr 320px;
+  height: 100vh;
+}
+
+.left-sidebar {
+  border-right: 1px solid #e5e5e5;
+  padding: 20px;
+}
+
+.main-content {
+  border-right: 1px solid #e5e5e5;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.right-sidebar {
+  padding: 20px;
+}
