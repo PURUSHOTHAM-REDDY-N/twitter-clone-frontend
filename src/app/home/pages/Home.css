@@ -1,0 +1,49 @@
+.main-layout {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.full-height-row {
+  height: 100vh;
+  margin: 0;
+  --ion-grid-column-padding: 0;
+}
+
+.left-sidebar {
+  border-right: 1px solid var(--ion-border-color);
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.middle-feed {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border-right: 1px solid var(--ion-border-color);
+  padding: 0;
+  overflow: hidden;
+}
+
+.middle-feed ion-header {
+  flex-shrink: 0;
+}
+
+.middle-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.right-sidebar {
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.trends-section {
+  position: sticky;
+  top: 0;
+}
