@@ -1,5 +1,4 @@
-// src/app/home/pages/Home.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonPage,
   IonHeader,
@@ -7,10 +6,6 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
-  IonContent,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonAvatar,
   IonTextarea,
   IonButton,
@@ -18,112 +13,274 @@ import {
   IonItemDivider,
   IonText,
   IonList,
-  IonItem
+  IonItem,
+  IonContent,
 } from "@ionic/react";
 import {
   imageOutline,
   happyOutline,
   linkOutline,
   locationOutline,
-  cameraOutline
+  cameraOutline,
+  chatbubbleOutline,
+  repeatOutline,
+  heartOutline,
+  shareOutline,
 } from "ionicons/icons";
+import "./Home.css";
+
+type Tweet = {
+  id: number;
+  username: string;
+  handle: string;
+  text: string;
+  img: string;
+  likes: number;
+  retweets: number;
+  comments: number;
+  liked: boolean;
+  retweeted: boolean;
+};
 
 const Home: React.FC = () => {
+  const [segment, setSegment] = useState<"for-you" | "following">("for-you");
+  const [tweets, setTweets] = useState<Tweet[]>([]);
+
+  useEffect(() => {
+    fetch("https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/tweets.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setTweets(data.tweets);
+      })
+      .catch((err) => {
+        console.error("Failed to load tweets", err);
+      });
+  }, []);
+
+  console.log("segment =", segment);
+console.log("tweets length =", tweets.length, tweets);
+
+
+  const toggleLike = (id: number) => {
+    setTweets((prev) =>
+      prev.map((t) =>
+        t.id === id ? { ...t, liked: !t.liked } : t
+      )
+    );
+  };
+
+  const toggleRetweet = (id: number) => {
+    setTweets((prev) =>
+      prev.map((t) =>
+        t.id === id ? { ...t, retweeted: !t.retweeted } : t
+      )
+    );
+  };
+
   return (
     <IonPage>
-      {/* removed translucent to prevent overlap */}
-      <IonHeader>
-        <IonToolbar>
-          <IonSegment value="for-you">
-            <IonSegmentButton value="for-you">
-              <IonLabel>For you</IonLabel>
-            </IonSegmentButton>
-            <IonSegmentButton value="following">
-              <IonLabel>Following</IonLabel>
-            </IonSegmentButton>
-          </IonSegment>
-        </IonToolbar>
-      </IonHeader>
-
-      {/* full-height scrollable content */}
-      <IonContent fullscreen className="ion-no-padding">
-        <IonGrid className="ion-no-padding">
-          {/* composer row with avatar */}
-          <IonRow className="ion-align-items-center ion-padding-horizontal ion-padding-top">
-            <IonCol size="1.5" className="ion-text-center">
-              <IonAvatar>
-                <img
-                  src="https://ionicframework.com/docs/img/demos/avatar.svg"
-                  alt="avatar"
-                />
-              </IonAvatar>
-            </IonCol>
-            <IonCol size="10.5">
-              <IonTextarea
-                placeholder="What's happening?"
-                autoGrow
-                rows={1}
-              />
-            </IonCol>
-          </IonRow>
-
-          {/* icons + Post button row */}
-          <IonRow className="ion-padding-horizontal ion-padding-bottom ion-align-items-center">
-            <IonCol size="7">
-              <IonButton fill="clear" size="small">
-                <IonIcon icon={imageOutline} />
-              </IonButton>
-              <IonButton fill="clear" size="small">
-                <IonIcon icon={cameraOutline} />
-              </IonButton>
-              <IonButton fill="clear" size="small">
-                <IonIcon icon={linkOutline} />
-              </IonButton>
-              <IonButton fill="clear" size="small">
-                <IonIcon icon={happyOutline} />
-              </IonButton>
-              <IonButton fill="clear" size="small">
-                <IonIcon icon={locationOutline} />
-              </IonButton>
-            </IonCol>
-            <IonCol size="5" className="ion-text-right">
-              <IonButton color="light">
-                <IonText color="dark">Post</IonText>
-              </IonButton>
-            </IonCol>
-          </IonRow>
-
-          {/* divider + Show posts */}
-          <IonItemDivider mode="md" className="ion-no-padding" />
-          <IonRow className="ion-padding-vertical">
-            <IonCol className="ion-text-center">
-              <IonText color="primary">Show 172 posts</IonText>
-            </IonCol>
-          </IonRow>
-          <IonItemDivider mode="md" className="ion-no-padding" />
-
-          {/* long scrollable feed with bottom padding */}
-          <IonList lines="none" className="ion-padding-bottom">
-            {Array.from({ length: 25 }).map((_, index) => (
-              <IonItem key={index}>
-                <IonAvatar slot="start">
-                  <img
-                    src="https://ionicframework.com/docs/img/demos/avatar.svg"
-                    alt="tweet avatar"
-                  />
-                </IonAvatar>
-                <IonLabel>
-                  <h2>CE‑Kopite · Dec {8 - (index % 8)}</h2>
-                  <p>
-                    Barnsley would be a good home game for Alonso to start on.
-                    Tweet number {index + 1}.
-                  </p>
-                </IonLabel>
-              </IonItem>
-            ))}
+      <div className="twitter-layout">
+      
+        <div className="left-sidebar">
+          <IonList lines="none">
+            <IonItem button routerLink="/home">Home</IonItem>
+            <IonItem button routerLink="/search">Explore</IonItem>
+            <IonItem button routerLink="/notifications">Notifications</IonItem>
+            <IonItem button routerLink="/profile">Profile</IonItem>
           </IonList>
-        </IonGrid>
-      </IonContent>
+        </div>
+
+       
+        <div className="middle-feed">
+          
+          <IonHeader className="ion-no-border middle-header">
+            <IonToolbar>
+              <IonSegment
+                value={segment}
+                onIonChange={(e) =>
+                  setSegment(e.detail.value as "for-you" | "following")
+                }
+                mode="md"
+              >
+                <IonSegmentButton value="for-you">
+                  <IonLabel>FOR YOU</IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="following">
+                  <IonLabel>FOLLOWING</IonLabel>
+                </IonSegmentButton>
+              </IonSegment>
+            </IonToolbar>
+          </IonHeader>
+
+       
+          <IonContent className="feed-content" scrollY>
+            {segment === "for-you" && (
+              <div>
+              
+                <div className="fleet-row">
+                  {tweets.map((tweet) => (
+                    <div key={tweet.id} className="fleet-item">
+                      <IonAvatar className="fleet-avatar">
+                        <img src={tweet.img} alt="story avatar" />
+                      </IonAvatar>
+                    </div>
+                  ))}
+                </div>
+
+            
+                <div className="composer-row">
+                  <IonAvatar className="composer-avatar">
+                    <img
+                      src="https://ionicframework.com/docs/img/demos/avatar.svg"
+                      alt="avatar"
+                    />
+                  </IonAvatar>
+                  <div className="composer-input">
+                    <IonTextarea
+                      placeholder="What's happening?"
+                      autoGrow
+                      rows={1}
+                    />
+                  </div>
+                </div>
+
+               
+                <div className="composer-actions">
+                  <div className="icon-group">
+                    <IonButton fill="clear" size="small">
+                      <IonIcon icon={imageOutline} />
+                    </IonButton>
+                    <IonButton fill="clear" size="small">
+                      <IonIcon icon={cameraOutline} />
+                    </IonButton>
+                    <IonButton fill="clear" size="small">
+                      <IonIcon icon={linkOutline} />
+                    </IonButton>
+                    <IonButton fill="clear" size="small">
+                      <IonIcon icon={happyOutline} />
+                    </IonButton>
+                    <IonButton fill="clear" size="small">
+                      <IonIcon icon={locationOutline} />
+                    </IonButton>
+                  </div>
+                  <IonButton className="post-button">
+                    <IonText>POST</IonText>
+                  </IonButton>
+                </div>
+
+             
+                <IonItemDivider mode="md" className="thin-divider" />
+                <div className="show-posts-text">
+                  <IonText color="primary">Show 172 posts</IonText>
+                </div>
+                <IonItemDivider mode="md" className="thin-divider" />
+
+                <IonList lines="none" className="tweet-list">
+                  {tweets.map((tweet) => (
+                    <IonItem key={tweet.id} className="tweet-item">
+                      <IonAvatar slot="start">
+                        <img src={tweet.img} alt="tweet avatar" />
+                      </IonAvatar>
+                      <IonLabel>
+                        <div className="tweet-header-row">
+                          <span className="tweet-author">{tweet.username}</span>
+                          <span className="tweet-handle">@{tweet.handle}</span>
+                        </div>
+
+                        <p
+                          className="tweet-text"
+                          dangerouslySetInnerHTML={{
+                            __html: tweet.text
+                              .replace(
+                                /#[a-zA-Z0-9_]+/g,
+                                (m) => `<span class="highlight">${m}</span>`
+                              )
+                              .replace(
+                                /@[a-zA-Z0-9_]+/g,
+                                (m) => `<span class="highlight">${m}</span>`
+                              ),
+                          }}
+                        />
+
+                        {tweet.img && (
+                          <div className="tweet-image-wrapper">
+                            <img
+                              src={tweet.img}
+                              alt="tweet media"
+                              className="tweet-image"
+                            />
+                          </div>
+                        )}
+
+                        <div className="tweet-actions-row">
+                          <IonButton
+                            fill="clear"
+                            size="small"
+                            className="tweet-action-btn"
+                          >
+                            <IonIcon
+                              icon={chatbubbleOutline}
+                              slot="start"
+                            />
+                            <span>{tweet.comments}</span>
+                          </IonButton>
+
+                          <IonButton
+                            fill="clear"
+                            size="small"
+                            className="tweet-action-btn"
+                            color={tweet.retweeted ? "primary" : "medium"}
+                            onClick={() => toggleRetweet(tweet.id)}
+                          >
+                            <IonIcon icon={repeatOutline} slot="start" />
+                            <span>{tweet.retweets}</span>
+                          </IonButton>
+
+                          <IonButton
+                            fill="clear"
+                            size="small"
+                            className="tweet-action-btn"
+                            color={tweet.liked ? "danger" : "medium"}
+                            onClick={() => toggleLike(tweet.id)}
+                          >
+                            <IonIcon icon={heartOutline} slot="start" />
+                            <span>{tweet.likes}</span>
+                          </IonButton>
+
+                          <IonButton
+                            fill="clear"
+                            size="small"
+                            className="tweet-action-btn"
+                          >
+                            <IonIcon icon={shareOutline} slot="start" />
+                          </IonButton>
+                        </div>
+                      </IonLabel>
+                    </IonItem>
+                  ))}
+                </IonList>
+              </div>
+            )}
+
+            {segment === "following" && (
+              <div className="following-placeholder">
+                <IonList lines="none">
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Following feed</h2>
+                      <p>Tweets from accounts you follow will appear here.</p>
+                    </IonLabel>
+                  </IonItem>
+                </IonList>
+              </div>
+            )}
+          </IonContent>
+        </div>
+
+       
+       
+        <div className="right-sidebar" />
+      </div>
     </IonPage>
   );
 };

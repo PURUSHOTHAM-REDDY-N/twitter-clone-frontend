@@ -7,7 +7,8 @@ import {IonApp, IonPage} from "@ionic/react";
 import {IonReactRouter} from "@ionic/react-router";
 import HomeRoutes from "../app/home/Home.routes";
 
-const AppRoutes = () => (
+const AppRoutes = () => {
+    return(
     <IonApp>
         <IonReactRouter>
             <IonPage>
@@ -16,10 +17,12 @@ const AppRoutes = () => (
                     <Route exact path="/notifications" component={Notifications}/>
                     <Route path="/home" component={HomeRoutes}/>
                     <Route exact path="/profile" component={Profile}/>
+                    <Route exact path= "/" component={HomeRoutes}/>
                 </Switch>
             </IonPage>
         </IonReactRouter>
     </IonApp>
 );
+};
 
 export default AppRoutes;

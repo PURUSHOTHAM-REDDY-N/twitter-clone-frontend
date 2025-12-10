@@ -11,9 +11,6 @@ import {
 } from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
 import {ellipse, square, triangle} from 'ionicons/icons';
-import Tab1 from './app/Tab1';
-import Tab2 from './app/Tab2';
-import Tab3 from './app/Tab3';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -44,8 +41,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './theme/Profile.css';
 import AppRoutes from './routes/AppRoutes';
-import ResponsiveLayout from "./components/layout/ResponsiveLayout";
+import ResponsiveLayout from './components/layout/ResponsiveLayout';
 
 setupIonicReact();
 
@@ -53,7 +51,6 @@ const App: React.FC = () => (
     <ResponsiveLayout>
         <AppRoutes/>
     </ResponsiveLayout>
-
 );
 
 export default App;
