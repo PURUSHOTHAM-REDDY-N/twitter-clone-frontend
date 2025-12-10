@@ -1,16 +1,4 @@
-import {Redirect, Route} from 'react-router-dom';
-import {
-    IonApp,
-    IonIcon,
-    IonLabel,
-    IonRouterOutlet,
-    IonTabBar,
-    IonTabButton,
-    IonTabs,
-    setupIonicReact
-} from '@ionic/react';
-import {IonReactRouter} from '@ionic/react-router';
-import {ellipse, square, triangle} from 'ionicons/icons';
+import {setupIonicReact} from '@ionic/react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,7 +22,6 @@ import '@ionic/react/css/display.css';
  * For more info, please see:
  * https://ionicframework.com/docs/theming/dark-mode
  */
-
 /* import '@ionic/react/css/palettes/dark.always.css'; */
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css';
@@ -48,9 +35,10 @@ import ResponsiveLayout from './components/layout/ResponsiveLayout';
 setupIonicReact();
 
 const App: React.FC = () => (
-    <ResponsiveLayout>
+    
         <AppRoutes/>
-    </ResponsiveLayout>
+    
+
 );
 
 export default App;

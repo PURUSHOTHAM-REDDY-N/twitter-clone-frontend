@@ -1,14 +1,22 @@
 import React from "react";
-import {Route, Switch} from "react-router";
+import { Route, Switch, Redirect, useRouteMatch } from "react-router";
 import Home from "./pages/Home";
 
-const HomeRoutes = () => (
+const HomeRoutes = () => {
+  const { path } = useRouteMatch();
 
+  return (
     <Switch>
-        <Route  path="" component={Home}/>
+      {/* Default page for /home */}
+      <Route exact path={path} component={Home} />
 
-     </Switch>
 
-);
+      {/* Catch-all inside /home */}
+      <Route path="*">
+        <Redirect to={path} />
+      </Route>
+    </Switch>
+  );
+};
 
 export default HomeRoutes;
