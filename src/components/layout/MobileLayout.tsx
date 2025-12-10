@@ -13,7 +13,8 @@ import {
 import { home, search, person, notifications } from "ionicons/icons";
 
 const MobileLayout = ({ children }: { children: React.ReactNode }) => (
-    <IonPage>
+    // <IonPage className="bg-black">
+    <div>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Twitter Clone</IonTitle>
@@ -41,7 +42,8 @@ const MobileLayout = ({ children }: { children: React.ReactNode }) => (
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </IonPage>
+      </div>
+    // </IonPage>
 );
 
 export default MobileLayout;

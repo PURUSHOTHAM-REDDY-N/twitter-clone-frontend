@@ -1,3 +1,5 @@
+import { IonPage } from "@ionic/react";
+
 export default function Search() {
-  return <div>Search Page</div>;
+  return <IonPage>Search Page</IonPage>;
 }

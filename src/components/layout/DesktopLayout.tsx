@@ -6,10 +6,11 @@ import { IonCol, IonRow } from "@ionic/react";
 
 const DesktopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <IonRow>
+    <IonRow className="bg-black">
       {/* <aside className="left-sidebar">
       </aside> */}
-      <IonCol size="3"><Sidebar/></IonCol>
+      <IonCol size="1"></IonCol>
+      <IonCol size="2"><Sidebar/></IonCol>
       <IonCol size="6">{children}</IonCol>
       <IonCol size="3"><RightSidebar/></IonCol>
 
