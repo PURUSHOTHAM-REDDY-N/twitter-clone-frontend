@@ -63,6 +63,7 @@ const Sidebar = () => {
         <div className="px-4 pb-6">
           <IonImg src="/assets/icon.png" className="w-8" alt="X Logo" />
         </div>
+        
 
         {/* Menu */}
         <div className="flex flex-col space-y-6">
