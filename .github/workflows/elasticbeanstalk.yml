@@ -1,4 +1,4 @@
-name: Deploy Ionic React Vite (Node 20) to Elastic Beanstalk
+name: Deploy Ionic React Vite to Elastic Beanstalk (Node 20 + Docker)
 
 on:
   push:
@@ -13,10 +13,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Zip application
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      - name: Zip application for Elastic Beanstalk
         run: zip -r app.zip . -x "*.git*"
 
-      - name: Get current timestamp
+      - name: Generate timestamp for version label
         id: timestamp
         run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
