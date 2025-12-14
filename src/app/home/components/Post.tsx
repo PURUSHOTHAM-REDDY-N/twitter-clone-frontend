@@ -197,7 +197,7 @@ function renderTextWithLinks(
                     color={tweet.liked ? "danger" : "medium"}
                   >
                     <IonIcon icon={heartOutline} slot="start" />
-                    <span>{tweet.likes}</span>
+                    {/* <span>{tweet?.likes}</span> */}
                   </IonButton>
 
                   <IonButton

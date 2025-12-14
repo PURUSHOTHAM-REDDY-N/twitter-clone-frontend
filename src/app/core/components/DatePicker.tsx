@@ -20,15 +20,17 @@ const DatePicker: React.FC<DatePickerProps> = ({ label, value, onChange, error }
 
       <IonModal keepContentsMounted={true}>
         <IonDatetime
-          id={id}
-          presentation="date"        // only date
-          value={value}
-          onIonChange={(e) => onChange(e.detail.value!)}
-          min="1900-01-01"
-          max={new Date().toISOString().split("T")[0]}
-          placeholder="Select Date"
-          pickerFormat="MMMM DD YYYY"
-        />
+  id={id}
+  presentation="date"
+  value={value}
+  onIonChange={(e) => {
+    const val = Array.isArray(e.detail.value) ? e.detail.value[0] : e.detail.value;
+    if (val) onChange(val);
+  }}
+  min="1900-01-01"
+  max={new Date().toISOString().split("T")[0]}
+/>
+
       </IonModal>
 
       {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
