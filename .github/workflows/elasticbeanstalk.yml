@@ -13,13 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies and build
-        run: |
-          npm install
-          npm run build
-
       - name: Zip application for Elastic Beanstalk
-        run: zip -r app.zip . -x "*.git*"
+        run: |
+          rm -f app.zip
+          zip -r app.zip . -x "*.git*" -x "node_modules/*" -x "*.github/*"
 
       - name: Generate timestamp for version label
         id: timestamp
