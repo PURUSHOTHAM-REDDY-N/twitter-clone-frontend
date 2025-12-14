@@ -1,4 +1,4 @@
-name: Deploy Ionic React Vite (Docker) to Elastic Beanstalk
+name: Deploy Ionic React Vite to Elastic Beanstalk
 
 on:
   push:
@@ -6,44 +6,48 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout the repo
+      # 1. Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Node (optional if Docker builds everything)
-      - name: Setup Node
+      # 2. Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies and run type checks (optional)
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Generate timestamp for EB version label
+      # 4. Build Vite app
+      - name: Build Vite app
+        run: npm run build
+
+      # 5. Zip the deployment package
+      - name: Prepare deployment package
+        run: |
+          rm -f app.zip
+          zip -r app.zip dist package.json server.js
+
+      # 6. Generate timestamp for EB version label
       - name: Generate timestamp
         id: timestamp
         run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-      # 5️⃣ Zip only the files needed for Docker deployment
-      - name: Zip application for Elastic Beanstalk
-        run: |
-          rm -f app.zip
-          zip -r app.zip Dockerfile nginx.conf package*.json public/ src/ -x "*.git*" -x "node_modules/*" -x "*.github/*"
-
-      # 6️⃣ Deploy to Elastic Beanstalk
+      # 7. Deploy to Elastic Beanstalk
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: twitter-clone-front
-          environment_name: Twitter-clone-front-env
-          region: us-east-1
+          environment_name: twitter-clone-front
+          region: eu-north-1
           version_label: ${{ github.sha }}-${{ env.TIMESTAMP }}
           deployment_package: app.zip
           wait_for_deployment: true
