@@ -8,7 +8,7 @@ import {IonReactRouter} from "@ionic/react-router";
 import ExploreRoutes from "../app/explore/explore.routes";
 import ResponsiveLayout from "../components/layout/ResponsiveLayout";
 import AuthRoutes from "../app/auth/auth.routes";
-import HomeRoutes from "../app/home/home.routes";
+import HomeRoutes from "../app/home/homeroutes";
 
 const AppRoutes = () => {
     return(
