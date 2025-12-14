@@ -16,6 +16,10 @@ jobs:
       - name: Zip application
         run: zip -r app.zip . -x "*.git*"
 
+      - name: Get current timestamp
+        id: timestamp
+        run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -23,6 +27,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: twitter-clone-front
           environment_name: twitter-clone-front
-          region: us-east-1
-          version_label: ${{ github.sha }}
+          region: us-north-1
+          version_label: ${{ github.sha }}-${{ env.TIMESTAMP }}
           deployment_package: app.zip
