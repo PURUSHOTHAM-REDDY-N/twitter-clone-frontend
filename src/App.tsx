@@ -28,9 +28,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import './theme/Profile.css';
 import AppRoutes from './routes/AppRoutes';
 import ResponsiveLayout from './components/layout/ResponsiveLayout';
+import "react-country-state-city/dist/react-country-state-city.css";
 
 setupIonicReact();
 

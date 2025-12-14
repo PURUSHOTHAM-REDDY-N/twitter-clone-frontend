@@ -1,6 +1,5 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import "../../theme/desktop.css";
 import RightSidebar from "./RightSidebar";
 import { IonCol, IonRow } from "@ionic/react";
 

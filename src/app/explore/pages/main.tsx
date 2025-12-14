@@ -50,8 +50,8 @@ const ExploreMainPage: React.FC = () => {
         <div className="flex items-center p-3">
           <IonSearchbar
             placeholder="Search"
-            className="flex-grow w-full border border-gray-700 rounded-full p-0 bg-gray-800 dark:bg-gray-800 text-white dark:text-white"
-            style={{ '--background': '#1f2937', '--placeholder-color': '#9ca3af' }}
+            className="w-full"
+            style={{ '--background': '#1f2937', '--placeholder-color': '#9ca3af','--border-radius':"100px" }}
           />
           <div className="ml-3 cursor-pointer text-white text-2xl">
             <IonIcon icon={settingsOutline}></IonIcon>
@@ -64,22 +64,22 @@ const ExploreMainPage: React.FC = () => {
         <IonSegment
           value={segment}
           onIonChange={e => setSegment(String(e.detail.value!))}
-          className="bg-gray-900 rounded-full m-3"
+          className=""
         >
           <IonSegmentButton value="forYou">
-            <IonLabel className="text-sm font-semibold text-white">For You</IonLabel>
+            <IonLabel className="text-sm font-semibold ">For You</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="trending">
-            <IonLabel className="text-sm font-semibold text-gray-400">Trending</IonLabel>
+            <IonLabel className="text-sm font-semibold ">Trending</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="news">
-            <IonLabel className="text-sm font-semibold text-gray-400">News</IonLabel>
+            <IonLabel className="text-sm font-semibold ">News</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="sports">
-            <IonLabel className="text-sm font-semibold text-gray-400">Sports</IonLabel>
+            <IonLabel className="text-sm font-semibold">Sports</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="entertainment">
-            <IonLabel className="text-sm font-semibold text-gray-400">Entertainment</IonLabel>
+            <IonLabel className="text-sm font-semibold">Entertainment</IonLabel>
           </IonSegmentButton>
         </IonSegment>
       </IonToolbar>

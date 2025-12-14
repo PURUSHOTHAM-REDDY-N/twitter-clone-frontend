@@ -88,3 +88,33 @@ ion-app {
 *::-webkit-scrollbar {
   display: none !important; /* Chrome, Safari, Opera */
 }
+
+.country-picker-box {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  margin-top: 4px;
+  background-color: black;
+}
+
+/* Fix background + text visibility */
+.country-dropdown select {
+  background-color: #1e1e1e !important; /* dark background */
+  color: #ffffff !important;            /* white text */
+  border: 1px solid #444 !important;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Fix options dropdown */
+.country-dropdown option {
+  color: black !important;               /* visible in dropdown list */
+  background-color: white !important;
+}
+
+/* Placeholder */
+.country-dropdown select option[value=""] {
+  color: #bbb !important;
+}
