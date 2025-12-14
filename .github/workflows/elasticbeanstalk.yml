@@ -1,4 +1,4 @@
-name: Deploy Ionic React Vite to Elastic Beanstalk (Node 20 + Docker)
+name: Deploy Ionic React Vite (Docker) to Elastic Beanstalk
 
 on:
   push:
@@ -10,18 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Zip application for Elastic Beanstalk
-        run: |
-          rm -f app.zip
-          zip -r app.zip . -x "*.git*" -x "node_modules/*" -x "*.github/*"
+      # 2️⃣ Set up Node (optional if Docker builds everything)
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
-      - name: Generate timestamp for version label
+      # 3️⃣ Install dependencies and run type checks (optional)
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Generate timestamp for EB version label
+      - name: Generate timestamp
         id: timestamp
         run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
+      # 5️⃣ Zip only the files needed for Docker deployment
+      - name: Zip application for Elastic Beanstalk
+        run: |
+          rm -f app.zip
+          zip -r app.zip Dockerfile nginx.conf package*.json public/ src/ -x "*.git*" -x "node_modules/*" -x "*.github/*"
+
+      # 6️⃣ Deploy to Elastic Beanstalk
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -32,3 +46,4 @@ jobs:
           region: eu-north-1
           version_label: ${{ github.sha }}-${{ env.TIMESTAMP }}
           deployment_package: app.zip
+          wait_for_deployment: true
