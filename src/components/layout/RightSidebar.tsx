@@ -52,8 +52,8 @@ const trendingData = [
 
 const RightSideBar: React.FC = () => {
   return (
-    <IonPage className="bg-black text-white p-4 min-h-screen">
-      <IonContent className="hide-scroll">
+    <div className="bg-black text-white p-4 min-h-screen">
+
         {/* Today's News */}
         <IonRow className="bg-gray-900 rounded-xl p-4 mb-6">
           <IonCol size="12" className="flex justify-between items-center mb-4">
@@ -92,8 +92,8 @@ const RightSideBar: React.FC = () => {
             </IonCol>
           ))}
         </IonRow>
-      </IonContent>
-    </IonPage>
+     
+          </div>
   );
 };
 

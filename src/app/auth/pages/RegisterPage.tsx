@@ -18,15 +18,18 @@ import { useState } from "react";
 import DatePicker from "../../core/components/DatePicker";
 import CountryPicker from "../../core/components/CountryPicker";
 import { useIonRouter } from "@ionic/react";
+import useAxios from "axios-hooks";
+import userStore from "../../../store/user.store";
 
 // Validation schema
 const signupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  bio: z.string().min(1, "Bio is required"),
+  username: z.string().min(1, "user name is required"),
+  name: z.string().min(1, "name is required"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   country: z.string().min(1, "Country is required"),
-  dob: z.string().min(1, "Date of Birth is required"),
+  dateOfBirth: z.string().min(1, "Date of Birth is required"),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -41,15 +44,29 @@ export default function RegisterPage() {
     resolver: zodResolver(signupSchema),
   });
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const ionRouter = useIonRouter();
 
+
+  const [{ loading }, registerUser] = useAxios(
+    {
+      url: "/users/register",
+      method: "POST",
+    },
+    { manual: true }
+  );
+
   const onSubmit = async (data: SignupFormData) => {
-    setLoading(true);
     console.log("Signup:", data);
+    // registerUser({ data })
+        const response: any = await registerUser({ data });
+console.log("Registration Response:", response);
+        userStore.user = response.data;
+
     await new Promise((res) => setTimeout(res, 1500));
-    setLoading(false);
-ionRouter.push("/home", "root");  };
+    // setLoading(false);
+ionRouter.push("/login", "root");  
+};
 
   return (
     <IonPage>
@@ -65,17 +82,22 @@ ionRouter.push("/home", "root");  };
 
             {/* First Name */}
             <IonItem className="rounded-xl">
-              <IonLabel position="stacked">First Name</IonLabel>
-              <IonInput type="text" {...register("firstName")} placeholder="Enter first name" />
+              <IonLabel position="stacked">User Name</IonLabel>
+              <IonInput type="text" {...register("username")} placeholder="Enter username" />
             </IonItem>
-            {errors.firstName && <IonText color="danger">{errors.firstName.message}</IonText>}
+            {errors.username && <IonText color="danger">{errors.username.message}</IonText>}
+<IonItem className="rounded-xl">
+              <IonLabel position="stacked">Name</IonLabel>
+              <IonInput type="text" {...register("name")} placeholder="Enter name" />
+            </IonItem>
+            {errors.name && <IonText color="danger">{errors.name.message}</IonText>}
 
             {/* Last Name */}
             <IonItem className="rounded-xl mt-3">
-              <IonLabel position="stacked">Last Name</IonLabel>
-              <IonInput type="text" {...register("lastName")} placeholder="Enter last name" />
+              <IonLabel position="stacked">Bio</IonLabel>
+              <IonInput type="text" {...register("bio")} placeholder="Enter Bio here" />
             </IonItem>
-            {errors.lastName && <IonText color="danger">{errors.lastName.message}</IonText>}
+            {errors.bio && <IonText color="danger">{errors.bio.message}</IonText>}
 
             {/* Email */}
             <IonItem className="rounded-xl mt-3">
@@ -101,13 +123,13 @@ ionRouter.push("/home", "root");  };
             {/* Date of Birth */}
             <Controller
               control={control}
-              name="dob"
+              name="dateOfBirth"
               render={({ field }) => (
                 <DatePicker
                   label="Date of Birth"
                   value={field.value}
                   onChange={field.onChange}
-                  error={errors.dob?.message}
+                  error={errors.dateOfBirth?.message}
                 />
               )}
             />
@@ -118,6 +140,14 @@ ionRouter.push("/home", "root");  };
                 <IonButton expand="block" shape="round" onClick={handleSubmit(onSubmit)} disabled={loading}>
                   {loading ? <IonSpinner name="crescent" /> : "Sign Up"}
                 </IonButton>
+              </IonCol>
+            </IonRow>
+            <IonRow className="ion-text-center mt-3">
+              <IonCol>
+                <IonText>
+                  Already have an account ?{" "}
+                  <a href="/auth/login" className="text-blue-600">Login</a>
+                </IonText>
               </IonCol>
             </IonRow>
 

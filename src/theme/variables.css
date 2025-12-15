@@ -67,6 +67,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-dark-shade: #292929;
   --ion-color-dark-tint: #444444;
 
+  
+
 }
 
 html, body {
@@ -117,4 +119,46 @@ ion-app {
 /* Placeholder */
 .country-dropdown select option[value=""] {
   color: #bbb !important;
+}
+
+
+.mobile-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #222;
+  background: #000;
+}
+
+.nav-item {
+  color: #777;
+  font-size: 24px;
+}
+
+.nav-item.active {
+  color: #1da1f2; /* Twitter blue */
+}
+
+html { scrollbar-width: none; } /* Firefox */
+body { -ms-overflow-style: none; } /* IE and Edge */
+body::-webkit-scrollbar, body::-webkit-scrollbar-button { display: none; } /* Chrome */
+
+/* // styles.scss */
+
+ion-content {
+  width: calc(100% + 15px) !important;
+}
+ion-content::part(scroll) {
+  padding-right: 15px !important;
 }

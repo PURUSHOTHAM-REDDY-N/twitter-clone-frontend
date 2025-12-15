@@ -1,14 +1,21 @@
 import {
+  IonCol,
+  IonContent,
   IonLabel,
   IonPage,
+  IonRow,
   IonSegment,
   IonSegmentButton,
   IonSegmentContent,
-  IonSegmentView
+  IonSegmentView,
+  useIonRouter
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Post from "../components/Post";
 import ExternalWebPanel from "../../core/components/ExternalWebPanel";
+import PushNotificationsSetup from "../../core/components/PushNotifications";
+import { useSnapshot } from "valtio";
+import userStore from "../../../store/user.store";
 
 type Tweet = {
   id: number;
@@ -25,13 +32,26 @@ type Tweet = {
 
 const Home: React.FC = () => {
   const [segment, setSegment] = useState<"for-you" | "following">("for-you");
-
+  const ionRounter = useIonRouter();
+const {user,isAuthenticated}= useSnapshot(userStore);
+useEffect(() => {
+  if(!isAuthenticated){
+    console.log("User is authenticated",isAuthenticated);
+ionRounter.push("/login");
+  }
+}, []);
   //   console.log("segment =", segment);
   // console.log("tweets length =", tweets.length, tweets);
 
   return (
     <IonPage>
-      <IonSegment value="for-you">
+       <IonContent fullscreen className="bg-black text-white">
+        
+           <PushNotificationsSetup />
+
+      <IonRow>
+        <IonCol size="12" class="mt-10">
+<IonSegment value="for-you">
         <IonSegmentButton value="for-you" contentId="for-you">
           <IonLabel>FOR YOU</IonLabel>
         </IonSegmentButton>
@@ -50,6 +70,9 @@ const Home: React.FC = () => {
           <Post />
         </IonSegmentContent>
       </IonSegmentView>
+        </IonCol>
+      </IonRow>
+      </IonContent>
     </IonPage>
   );
 };

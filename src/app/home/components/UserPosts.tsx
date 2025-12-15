@@ -4,8 +4,7 @@ import {
   IonIcon,
   IonLabel,
   IonList,
-  IonRow,
-  useIonRouter
+  IonRow
 } from "@ionic/react";
 import {
   chatbubbleOutline,
@@ -20,16 +19,12 @@ import CreatePostForm from "./CreatePostForm";
 import ShareButton from "../../core/components/ShareBuuton";
 import useAxios from "axios-hooks";
 import { ur } from "zod/v4/locales";
-import { useSnapshot } from "valtio";
-import userStore from "../../../store/user.store";
 
-export default function post() {
-
-  const {user} = useSnapshot(userStore);
+export default function UserPosts({userId}: {userId: string}) {
 
   const [{ data, loading, error }, getPosts] = useAxios<any>(
     {
-      url: "posts/all",
+      url: `/posts/user/${userId}`,
       method: "GET",
     },
     { manual: true }
@@ -39,7 +34,7 @@ export default function post() {
   getPosts();
 }, []);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
-const ionRouter = useIonRouter();
+
   const urlRegex = /(https?:\/\/[^\s]+)/g;
 
   function renderTextWithLinks(
@@ -69,9 +64,9 @@ const ionRouter = useIonRouter();
         className="bg-black text-white p-4 border-b border-gray-700"
       >
         <IonRow>
-          <IonCol size="12">
+          {/* <IonCol size="12">
             <CreatePostForm postCreated={()=>getPosts()} />
-          </IonCol>
+          </IonCol> */}
           {/* <IonCol size="12" className="text-center">
             <IonText color="primary">Show 172 posts</IonText>
           </IonCol> */}
@@ -85,15 +80,15 @@ const ionRouter = useIonRouter();
           <div  className="border-t border-gray-700 mb-4 mt-3 pt-3">
             {data?.map((tweet:any,index:any) => (
               <IonRow className="mt-10" key={index}>
-                <IonCol size="2" sizeSm="1.5" onClick={()=>{ionRouter.push(`/profile/${tweet.userId}`)}}>
-                  <Avatar size="40" name={tweet?.authorUsername} round={true} />
+                <IonCol size="2" sizeSm="1.5">
+                  <Avatar size="40" name={tweet.authorName} round={true} />
                 </IonCol>
                 <IonCol  size="10" sizeSm="10.5">
                   <IonRow>
                     <IonCol size="10" className="text-left">
                       <div className="tweet-header-row">
                         <span className="tweet-author">{tweet.authorUsername} </span>
-                        <span onClick={()=>{ionRouter.push(user?.id===tweet.userId?'/profile':`/profile/${tweet.userId}`)}} className="tweet-handle text-blue-500">@{tweet?.authorName}</span>
+                        <span className="tweet-handle">@{tweet?.authorName}</span>
                       </div>
                     </IonCol>
                     <IonCol size="2" class="text-right">

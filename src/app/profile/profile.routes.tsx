@@ -1,5 +1,4 @@
-import React from "react";
-import { Route, Switch, Redirect, useRouteMatch } from "react-router";
+import { Route, Switch, useRouteMatch } from "react-router";
 import Profile from "./pages/Profile";
 
 const ProfileRoutes = () => {
@@ -7,13 +6,12 @@ const ProfileRoutes = () => {
 
   return (
     <Switch>
-      {/* Default page for /home */}
       <Route exact path={path} component={Profile} />
 
       {/* Catch-all inside /home */}
-      <Route path="*">
+      {/* <Route path="*">
         <Redirect to={path} />
-      </Route>
+      </Route> */}
     </Switch>
   );
 };

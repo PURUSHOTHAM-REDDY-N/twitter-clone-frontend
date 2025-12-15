@@ -9,12 +9,15 @@ import {
   IonSpinner,
   IonRow,
   IonCol,
+  useIonRouter,
 } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { LoginFormData, loginFormSchema } from "../auth.model";
+import useAxios from "axios-hooks";
+import { setAuthData } from "../../../store/user.store";
 
 
 
@@ -28,16 +31,24 @@ export default function LoginPage() {
     resolver: zodResolver(loginFormSchema),
   });
 
-  const [loading, setLoading] = useState(false);
+  const ionRouter = useIonRouter();
+
+  const [{ loading }, loginUser] = useAxios(
+    {
+      url: "/auth/login",
+      method: "POST",
+    },
+    { manual: true }
+  );
 
   const onSubmit = async (data: LoginFormData) => {
-    setLoading(true);
     console.log("Login:", data);
+const response: any = await loginUser({ data });
+setAuthData(response.data);
 
     // Replace with your API call
-    await new Promise((res) => setTimeout(res, 1500));
-
-    setLoading(false);
+    // await new Promise((res) => setTimeout(res, 1500));
+ionRouter.push("/home", "root");  
   };
 
   return (
@@ -97,7 +108,7 @@ export default function LoginPage() {
               <IonCol>
                 <IonText>
                   Don't have an account?{" "}
-                  <a href="/auth/register" className="text-blue-600">Sign Up</a>
+                  <a href="/register" className="text-blue-600">Sign Up</a>
                 </IonText>
               </IonCol>
             </IonRow>

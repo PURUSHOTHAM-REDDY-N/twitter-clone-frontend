@@ -15,12 +15,39 @@ import {
   IonLabel,
   IonSegmentView,
   IonSegmentContent,
+  useIonRouter,
 } from "@ionic/react";
 import { searchOutline } from "ionicons/icons";
 import Avatar from "react-avatar";
 import Post from "../../home/components/Post";
+import useAxios from "axios-hooks";
+import { useSnapshot } from "valtio";
+import userStore from "../../../store/user.store";
+import UserPosts from "../../home/components/UserPosts";
+import { useEffect } from "react";
 
 const Profile = () => {
+const { user, token, isAuthenticated } = useSnapshot(userStore);
+
+ const [{ data, loading, error }, getUserDetails] = useAxios<any>(
+    {
+      url: `/users/profile/${user?.id}`,
+      method: "GET",
+    },
+    { manual: false }
+  );
+  // useEffect(() => {
+  //   getUserDetails();
+  // }, []);
+
+  const ionRouter = useIonRouter();
+  
+  const wipeDataAndLogout = () => {
+    userStore.user = null;
+    userStore.token = null;
+    userStore.isAuthenticated = false;
+    ionRouter.push("/login");
+  }
   return (
     <IonPage className="bg-black">
       {/* Top Header */}
@@ -32,16 +59,19 @@ const Profile = () => {
 
           <IonTitle className="text-sm font-semibold">
             PURUSHOTHAM REDDY
-            <p className="text-xs text-gray-400">0 posts</p>
+            <p className="text-xs text-gray-400">{data?.posts?.length} posts</p>
           </IonTitle>
 
-          <IonButtons slot="end">
-            <IonIcon icon={searchOutline} className="text-white text-xl" />
-          </IonButtons>
+          <IonButton fill="clear" onClick={()=>{wipeDataAndLogout()}} slot="end">
+            Log Out
+          </IonButton>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen className="bg-black text-white">
+        <div>
+
+        
         {/* Cover Image */}
         <div className="h-40 bg-gray-700 w-full"></div>
 
@@ -57,33 +87,33 @@ const Profile = () => {
               size="small"
               className="rounded-full text-white border-gray-500"
             >
-              Edit profile
+              {/* Edit profile */}
             </IonButton>
           </div>
 
           {/* User Info */}
           <div className="mt-10">
             <IonText>
-              <h2 className="text-xl font-bold">PURUSHOTHAM REDDY</h2>
+              <h2 className="text-xl font-bold">{data?.user.name}</h2>
             </IonText>
 
             <IonText className="text-gray-500 text-sm">
-              <p>@PReddy61761</p>
+              <p>@{data?.user?.username}</p>
             </IonText>
 
-            <IonText className="text-gray-500 text-sm flex items-center gap-1 mt-2">
+            {/* <IonText className="text-gray-500 text-sm flex items-center gap-1 mt-2">
               <span>📅</span>
-              <span>Joined December 2025</span>
-            </IonText>
+              <span>Born December 2025</span>
+            </IonText> */}
 
             {/* Following / Followers */}
             <div className="flex gap-4 mt-3 text-sm">
               <p>
-                <span className="font-semibold text-white">9</span>{" "}
+                <span className="font-semibold text-gray-500">{data?.user.following?.length}</span>{" "}
                 <span className="text-gray-500">Following</span>
               </p>
               <p>
-                <span className="font-semibold text-white">0</span>{" "}
+                <span className="font-semibold text-gray-500">{data?.user.followers?.length}</span>{" "}
                 <span className="text-gray-500">Followers</span>
               </p>
             </div>
@@ -96,28 +126,18 @@ const Profile = () => {
                 <IonSegmentButton value="replies" contentId="replies">
                   <IonLabel>Replies</IonLabel>
                 </IonSegmentButton>
-                <IonSegmentButton value="media" contentId="media">
-                  <IonLabel>Media</IonLabel>
-                </IonSegmentButton>
-                <IonSegmentButton value="links" contentId="links">
-                  <IonLabel>Links</IonLabel>
-                </IonSegmentButton>
               </IonSegment>
         
               <IonSegmentView>
                 <IonSegmentContent id="posts">
-                  <Post />
+                  <UserPosts userId={user?.id!}/>
                 </IonSegmentContent>
                 <IonSegmentContent id="replies">
-                  <Post />
+                  <UserPosts userId={user?.id!}/>
                 </IonSegmentContent>
-                <IonSegmentContent id="media">
-                  <Post />
-                </IonSegmentContent>
-                <IonSegmentContent id="links">
-                  <Post />
-                </IonSegmentContent>
+                
               </IonSegmentView>
+              </div>
       </IonContent>
     </IonPage>
   );

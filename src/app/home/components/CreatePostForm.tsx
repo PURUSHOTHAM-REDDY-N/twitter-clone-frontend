@@ -20,13 +20,15 @@ import {
 import Avatar from "react-avatar";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { CreatePostFormData, createPostFormSchema } from "../home.model";
-import { useState } from "react";
+import { use, useState } from "react";
 import GifPicker from "gif-picker-react";
 import UploadGIFModel from "./UploadGIFModel";
 import { Camera, CameraResultType } from '@capacitor/camera';
+import { useSnapshot } from "valtio";
+import userStore from "../../../store/user.store";
 
-export default function CreatePostForm() {
-  const MAX_LENGTH = 280; // twitter style
+export default function CreatePostForm({postCreated}: {postCreated?: ()=>void}) {
+  const MAX_LENGTH = 250; // twitter style
 
   const form = useForm<CreatePostFormData>({
     resolver: zodResolver(createPostFormSchema),
@@ -35,20 +37,61 @@ export default function CreatePostForm() {
       message: "",
     },
   });
+const { user, token, isAuthenticated } = useSnapshot(userStore);
 
   const [{ loading }, createPost] = useAxios(
     {
-      url: "/users/send-registration-otp",
+      url: "/posts/create",
       method: "POST",
     },
     { manual: true }
   );
 
+  const [{ loading: uploading }, uploadImage] = useAxios(
+  {
+    url: "/images/upload",
+    method: "POST",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  },
+  { manual: true }
+);
+
+const webPathToFile = async (webPath: string): Promise<File> => {
+  const response = await fetch(webPath);
+  const blob = await response.blob();
+  return new File([blob], `image-${Date.now()}.jpg`, {
+    type: blob.type,
+  });
+};
+
+const uploadImageAndGetUrl = async (webPath: string): Promise<string> => {
+  const file = await webPathToFile(webPath);
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await uploadImage({ data: formData });
+  return response.data.imageUrl;
+};
+
   const [selectedGif, setSelectedGif] = useState<string | null>(null);
 const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const onPostSubmit: SubmitHandler<CreatePostFormData> = async (data) => {
-    await createPost({ data });
+  const onPostSubmit: SubmitHandler<CreatePostFormData> = async (e) => {
+    
+  
+     createPost({data: {userId:user?.id,content:e.message,imageUrls:[selectedGif,selectedImage]}}).then((response)=>{
+      console.log("Post created:",response.data);
+      // Reset form
+      form.reset();
+      setSelectedGif(null);
+      setSelectedImage(null);
+      postCreated && postCreated()
+     }).catch((error)=>{
+      console.error("Error creating post:",error);
+     })
   };
 
   const takePicture = async () => {
@@ -60,25 +103,27 @@ const [selectedImage, setSelectedImage] = useState<string | null>(null);
     });
 
     if (image.webPath) {
-      setSelectedImage(image.webPath);
+      const imageUrl = await uploadImageAndGetUrl(image.webPath);
+      setSelectedImage(imageUrl);
     }
   } catch (err) {
-    console.log("Camera cancelled or failed", err);
+    console.error("Camera failed", err);
   }
 };
 
 
+
   return (
     <form onSubmit={form.handleSubmit(onPostSubmit)}>
-      <IonRow className="items-start">
+      <IonRow className="items-start mt-3">
 
         {/* Avatar */}
-        <IonCol size="1">
-          <Avatar size="40" round={true} />
+        <IonCol size="2" sizeSm="1.5">
+          <Avatar size="50" round={true} />
         </IonCol>
 
         {/* Textarea */}
-        <IonCol size="11">
+        <IonCol className="align-middle" size="10" sizeSm="10.5">
           <Controller
             control={form.control}
             name="message"
@@ -90,6 +135,7 @@ const [selectedImage, setSelectedImage] = useState<string | null>(null);
                   onIonBlur={field.onBlur}
                   placeholder="What's happening?"
                   autoGrow
+                   counter={true} 
                   rows={2}
                   maxlength={MAX_LENGTH}
                   className={
@@ -98,15 +144,12 @@ const [selectedImage, setSelectedImage] = useState<string | null>(null);
                   errorText={form.formState.errors?.message?.message}
                 />
 
-                {/* Character Counter */}
-                <div className="text-right text-gray-400 text-sm pr-2 mt-1">
-                  {field.value?.length || 0}/{MAX_LENGTH}
-                </div>
+                
               </>
             )}
           />
         </IonCol>
-        <IonCol size="12">
+        <IonCol size="12" class="mt-3">
   {selectedGif && (
     <div className="relative inline-block mt-2">
       <img
@@ -145,13 +188,13 @@ const [selectedImage, setSelectedImage] = useState<string | null>(null);
 </IonCol>
 
         {/* Action Buttons Row */}
-        <IonCol size="8" className="flex items-center space-x-1 mt-2">
-          <IonButton fill="clear" size="small">
-            <IonIcon icon={imageOutline} />
+        <IonCol size="8" className="flex items-center space-x-1 mt-3">
+          <IonButton fill="clear" size="small" onClick={takePicture}>
+            <IonIcon size="large" icon={imageOutline} />
           </IonButton>
 
           <IonButton fill="clear" size="small" onClick={takePicture}>
-            <IonIcon icon={cameraOutline} />
+            <IonIcon size="large" icon={cameraOutline} />
           </IonButton>
 
           {/* <IonButton fill="clear" size="small"> */}
@@ -159,16 +202,16 @@ const [selectedImage, setSelectedImage] = useState<string | null>(null);
           {/* </IonButton> */}
 
           <IonButton fill="clear" size="small">
-            <IonIcon icon={happyOutline} />
+            <IonIcon size="large" icon={happyOutline} />
           </IonButton>
 
-          <IonButton fill="clear" size="small">
-            <IonIcon icon={locationOutline} />
-          </IonButton>
+          {/* <IonButton fill="clear" size="small">
+            <IonIcon size="large" icon={locationOutline} />
+          </IonButton> */}
         </IonCol>
 
         {/* POST Button */}
-        <IonCol size="4" className="text-right mt-2">
+        <IonCol size="4" className="text-right mt-3">
           <IonButton
             type="submit"
             color="secondary"

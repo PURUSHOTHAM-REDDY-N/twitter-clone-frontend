@@ -12,9 +12,9 @@ const HomeRoutes = () => {
 
 
       {/* Catch-all inside /home */}
-      <Route path="*">
+      {/* <Route path="*">
         <Redirect to={path} />
-      </Route>
+      </Route> */}
     </Switch>
   );
 };

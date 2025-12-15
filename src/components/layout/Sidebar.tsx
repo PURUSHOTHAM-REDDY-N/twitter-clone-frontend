@@ -61,7 +61,7 @@ const Sidebar = () => {
       <IonCol size="12" className="flex flex-col justify-between py-4">
         {/* Logo */}
         <div className="px-4 pb-6">
-          <IonImg src="/assets/icon.png" className="w-8" alt="X Logo" />
+          <IonImg src="/assets/icon.png" className="w-20" alt="X Logo" />
         </div>
         
 

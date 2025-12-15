@@ -15,17 +15,17 @@ import { home, search, person, notifications } from "ionicons/icons";
 const MobileLayout = ({ children }: { children: React.ReactNode }) => (
     // <IonPage className="bg-black">
     <div>
-      <IonHeader>
+      {/* <IonHeader>
         <IonToolbar>
           <IonTitle>Twitter Clone</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </IonHeader> */}
 
       <IonTabs>
         <IonRouterOutlet>{children}</IonRouterOutlet>
 
         <IonTabBar slot="bottom">
-          <IonTabButton tab="home" href="/">
+          <IonTabButton tab="home" href="/home">
             <IonIcon icon={home} />
           </IonTabButton>
 

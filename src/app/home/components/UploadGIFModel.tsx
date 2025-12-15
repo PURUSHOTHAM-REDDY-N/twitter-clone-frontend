@@ -20,7 +20,7 @@ function UploadGIFModel({ onGifSelect }: { onGifSelect: (gifUrl: string) => void
   return (
     <>
       <IonButton fill="clear" id={modalId}>
-        <HiOutlineGif size={22}/>
+        <HiOutlineGif size={35}/>
 
         {/* <IonIcon icon={linkOutline} /> */}
       </IonButton>
