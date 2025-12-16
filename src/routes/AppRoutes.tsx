@@ -16,6 +16,8 @@ import userStore from "../store/user.store";
 import ProfileDetails from "../app/profile/pages/ProfileDetails";
 import RegisterPage from "../app/auth/pages/RegisterPage";
 import LoginPage from "../app/auth/pages/LoginPage";
+import { ToastProvider } from "../app/core/components/ToastProvider";
+import SavedPosts from "../app/home/pages/SavedPosts";
 
 const AppRoutes = () => {
     const { user, token, isAuthenticated } = useSnapshot(userStore);
@@ -28,6 +30,8 @@ const AppRoutes = () => {
   configure({ axios: axiosInstance });
     return(
     <IonApp>
+        <ToastProvider>
+
         <IonReactRouter>
             <IonRouterOutlet>
                 {/* <   Route exact path="/" render={() => <Redirect to={isAuthenticated ? "/home" : "/auth/login"} />} /> */}
@@ -37,12 +41,14 @@ const AppRoutes = () => {
                     <Route exact path="/search" component={Search}/>
                     <Route exact path="/notifications" component={Notifications}/>
                     <Route path="/home" component={HomeRoutes}/>
+                    <Route path="/save" component={SavedPosts}/>
                     <Route path="/explore" component={ExploreRoutes}/>
                     <Route exact path="/profile" component={Profile}/>
                     <Route exact path="/profile/:id" component={ProfileDetails} />
                 </ResponsiveLayout>
             </IonRouterOutlet>
         </IonReactRouter>
+        </ToastProvider>
     </IonApp>
 );
 };

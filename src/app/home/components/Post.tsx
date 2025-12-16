@@ -8,9 +8,12 @@ import {
   useIonRouter
 } from "@ionic/react";
 import {
+  bookmarkOutline,
+  bookOutline,
   chatbubbleOutline,
   heartOutline,
   repeatOutline,
+  saveOutline,
   shareOutline,
 } from "ionicons/icons";
 import { useEffect, useState } from "react";
@@ -22,10 +25,14 @@ import useAxios from "axios-hooks";
 import { ur } from "zod/v4/locales";
 import { useSnapshot } from "valtio";
 import userStore from "../../../store/user.store";
+import { useToast } from "../../core/components/ToastProvider";
 
 export default function post() {
 
   const {user} = useSnapshot(userStore);
+
+    const { showToast } = useToast();
+
 
   const [{ data, loading, error }, getPosts] = useAxios<any>(
     {
@@ -34,6 +41,30 @@ export default function post() {
     },
     { manual: true }
   );
+
+  const [, savePostRequest] = useAxios(
+  {
+    url: "",
+    method: "POST",
+  },
+  { manual: true }
+);
+
+const handleSavePost = async (postId: string) => {
+  if (!user?.id) return;
+
+  try {
+    await savePostRequest({
+      url: `/users/save?userId=${user.id}&postId=${postId}`,
+    });
+    showToast("Post saved successfully!", 2000, "success");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to save post.");
+  }
+};
+
+
 
   useEffect(() => {
   getPosts();
@@ -97,12 +128,13 @@ const ionRouter = useIonRouter();
                       </div>
                     </IonCol>
                     <IonCol size="2" class="text-right">
-                      <ShareButton text="this is test share"/>
-                      {/* <IonIcon
+                      {/* <ShareButton text="this is test share"/> */}
+                      <IonIcon
+                      onClick={() => handleSavePost(tweet.id)}
                         size="large"
-                        icon={shareOutline}
+                        icon={bookmarkOutline}
                         className="text-gray-400 cursor-pointer"
-                      /> */}
+                      />
                     </IonCol>
                     <IonCol size="12">
                       <IonLabel>

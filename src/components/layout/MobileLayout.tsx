@@ -10,7 +10,7 @@ import {
   IonIcon,
   IonRouterOutlet
 } from "@ionic/react";
-import { home, search, person, notifications } from "ionicons/icons";
+import { home, search, person, notifications, bookmarkSharp } from "ionicons/icons";
 
 const MobileLayout = ({ children }: { children: React.ReactNode }) => (
     // <IonPage className="bg-black">
@@ -21,16 +21,16 @@ const MobileLayout = ({ children }: { children: React.ReactNode }) => (
         </IonToolbar>
       </IonHeader> */}
 
-      <IonTabs>
+      <IonTabs >
         <IonRouterOutlet>{children}</IonRouterOutlet>
 
-        <IonTabBar slot="bottom">
+        <IonTabBar className="pb-5" slot="bottom">
           <IonTabButton tab="home" href="/home">
             <IonIcon icon={home} />
           </IonTabButton>
 
-          <IonTabButton tab="search" href="/search">
-            <IonIcon icon={search} />
+          <IonTabButton tab="saved" href="/save">
+            <IonIcon icon={bookmarkSharp} />
           </IonTabButton>
 
           <IonTabButton tab="notifications" href="/notifications">
